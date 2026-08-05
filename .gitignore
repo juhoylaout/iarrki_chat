@@ -1,0 +1,5 @@
+*.ipynb
+*.venv
+*.txt
+
+assistant.py
