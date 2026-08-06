@@ -1,4 +1,5 @@
 import os
+from getpass import getpass
 os.environ["HF_HUB_DISABLE_XET"] = "1" # Disable XET as it can slow down downloads.
 
 # import tokenizer and model classes
@@ -6,8 +7,15 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import huggingface_hub # for logging in to Hugging Face
 
 # login to Hugging Face
-token = os.environ["HF_TOKEN"]
-huggingface_hub.login(token=token)
+token = os.getenv("HF_TOKEN")
+if token:
+    print(f"Found token starting with: {token[:8]}...")
+else:
+    os.environ["HF_TOKEN"] = getpass("Enter your Hugging Face token (can be left empty): ")
+    token = os.getenv("HF_TOKEN")
+
+if token != "":
+    huggingface_hub.login(token=token)
 
 # instantiate tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-3B-Instruct", token=token)
@@ -37,7 +45,7 @@ while True:
 
         generated_ids = model.generate(
             **model_inputs,
-            max_new_tokens=512
+            max_new_tokens=1024
         )
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)

@@ -1,5 +1,3 @@
 *.ipynb
 *.venv
-*.txt
-
-assistant.py
+cached_models.txt
