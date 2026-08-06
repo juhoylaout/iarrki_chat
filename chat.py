@@ -17,9 +17,14 @@ else:
 if token != "":
     huggingface_hub.login(token=token)
 
+# Read the model name from file model.txt
+f = open("model.txt", "r")
+model_name = f.readline()
+f.close()
+
 # instantiate tokenizer and model
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-3B-Instruct", token=token)
-model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-3B-Instruct", token=token)
+tokenizer = AutoTokenizer.from_pretrained(model_name, token=token)
+model = AutoModelForCausalLM.from_pretrained(model_name, token=token)
 
 print("\nWelcome to the chat!")
 
