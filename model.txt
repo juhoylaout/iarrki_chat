@@ -1,1 +1,9 @@
-Qwen/Qwen2.5-3B-Instruct
+Qwen/Qwen3-0.6B
+
+Qwen/Qwen3-0.6B
+Qwen/Qwen3-1.7B
+Qwen/Qwen3-4B
+Qwen/Qwen3-4B-GGUF
+Qwen/Qwen3-8B
+
+Topmost model will be used.
