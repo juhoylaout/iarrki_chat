@@ -29,15 +29,10 @@ f.close()
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
 
-print("\nWelcome to Iarrki Chat! This AI tool is powered by Qwen3. Type 'T' to activate thinking mode.")
-thinking_mode = False
+print("\nWelcome to Iarrki Chat! This AI tool is powered by Qwen3.")
 
 while True:
     prompt = input("\nAsk anything or type 'exit' to exit: ") # ask for user prompt
-    if prompt.lower() == "t":
-        thinking_mode = True
-        print("Thinking mode activated.")
-        continue
 
     if prompt == "exit":
         break
@@ -49,7 +44,7 @@ while True:
         messages = [
             {"role": "user", "content": prompt}
         ]
-        inputs = tokenizer.apply_chat_template(
+        model_inputs = tokenizer.apply_chat_template(
             messages,
             add_generation_prompt=True,
             tokenize=True,
@@ -57,5 +52,15 @@ while True:
             return_tensors="pt",
         ).to(model.device)
 
-        outputs = model.generate(**inputs, max_new_tokens=40)
-        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+        generated_ids = model.generate(**model_inputs, max_new_tokens=32768)
+        output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist()
+
+        # parsing thinking content
+        try:
+            # rindex finding 151668 (</think>)
+            index = len(output_ids) - output_ids[::-1].index(151668)
+        except ValueError:
+            index = 0
+
+        content = tokenizer.decode(output_ids[index:], skip_special_tokens=True).strip("\n")
+        print("\r", content)
