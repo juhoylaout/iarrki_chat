@@ -52,6 +52,7 @@ while True:
             return_tensors="pt",
         ).to(model.device)
 
+        # generate output
         generated_ids = model.generate(**model_inputs, max_new_tokens=32768)
         output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist()
 
@@ -62,5 +63,6 @@ while True:
         except ValueError:
             index = 0
 
+        # decode and print response
         content = tokenizer.decode(output_ids[index:], skip_special_tokens=True).strip("\n")
         print("\r", content)
